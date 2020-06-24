@@ -1,0 +1,17 @@
+//function triger on create document in firestore
+
+exports.onCreateTrigger = functions.firestore.document('/users/{documentId}/')
+	.onCreate((snap, context) => {
+	// Grab the current value of what was written to Cloud Firestore.
+	const name = snap.data().name;
+
+	// Access the parameter `{documentId}` with `context.params`
+	console.log('Uppercasing', context.params.documentId, name);
+	
+	const uppercase = name.toUpperCase();
+	
+	// You must return a Promise when performing asynchronous tasks inside a Functions such as
+	// writing to Cloud Firestore.
+	// Setting an 'uppercase' field in Cloud Firestore document returns a Promise.
+	return snap.ref.set({uppercase}, {merge: true});
+});
