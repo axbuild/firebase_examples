@@ -15,3 +15,71 @@ exports.onCreateTrigger = functions.firestore.document('/users/{documentId}/')
 	// Setting an 'uppercase' field in Cloud Firestore document returns a Promise.
 	return snap.ref.set({uppercase}, {merge: true});
 });
+
+
+const functions = require('firebase-functions');
+
+exports.newMessageNotifyTrigger = functions.firestore.document('/users/{userId}')
+	.onCreate((snap, context) => {
+	// Grab the current value of what was written to Cloud Firestore.
+	// const name = snap.data().name;
+
+	// Access the parameter `{documentId}` with `context.params`
+	// console.log('Uppercasing', context.params.documentId, name);
+	// console.log('CHATS1', context);
+	console.log('users', snap.data());
+	
+	// const uppercase = name.toUpperCase();
+	
+	// You must return a Promise when performing asynchronous tasks inside a Functions such as
+	// writing to Cloud Firestore.
+	// Setting an 'uppercase' field in Cloud Firestore document returns a Promise.
+	// return snap.ref.set({uppercase}, {merge: true});
+});
+
+exports.newMessageNotifyTrigger2 = functions.firestore.document('/chats/{chatId}')
+// exports.newMessageNotifyTrigger = functions.firestore.document('/users/{userId}/chats/{chatId}')
+	.onCreate((snap, context) => {
+	// Grab the current value of what was written to Cloud Firestore.
+	// const name = snap.data().name;
+
+	// Access the parameter `{documentId}` with `context.params`
+	// console.log('Uppercasing', context.params.documentId, name);
+	console.log('CHATS1', context);
+	console.log('chats', snap.data());
+	
+	// const uppercase = name.toUpperCase();
+	
+	// You must return a Promise when performing asynchronous tasks inside a Functions such as
+	// writing to Cloud Firestore.
+	// Setting an 'uppercase' field in Cloud Firestore document returns a Promise.
+	// return snap.ref.set({uppercase}, {merge: true});
+});
+
+// exports.helloWorld = functions.https.onRequest(async (request, response) => {
+// 	try{
+// 		const result = await bitrix24.callMethod('user.get');
+// 		console.log(result)
+// 	}catch(err){
+// 		console.log(err)
+// 	}
+// 	response.send("Hello from Firebase!");
+// });
+
+// users/{userId}
+// users/{userId}/name
+// users/{userId}/last_name
+// users/{userId}/email
+// users/{userId}/device_token
+// users/{userId}/type
+// users/{userId}/photo
+// users/{userId}/avatar
+// users/{userId}/created_date
+// users/{userId}/group
+
+// chats/{chatId}/users:array
+// chats/{chatId}/admins:array
+// chats/{chatId}/created_date:microtime
+// chats/{chatId}/messages/{messageId}/message:text
+// chats/{chatId}/messages/{messageId}/send_by:userId
+// chats/{chatId}/messages/{messageId}/time:microtime
