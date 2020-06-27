@@ -1,33 +1,67 @@
-//function triger on create document in firestore
+const functions = require('firebase-functions')
+const admin = require('firebase-admin')
 
-exports.onCreateTrigger = functions.firestore.document('/users/{documentId}/')
-	.onCreate((snap, context) => {
-	// Grab the current value of what was written to Cloud Firestore.
-	const name = snap.data().name;
+admin.initializeApp()
+const db = admin.firestore()
 
-	// Access the parameter `{documentId}` with `context.params`
-	console.log('Uppercasing', context.params.documentId, name);
+exports.sendNotify = functions.firestore.document('/chats/{chatId}')
+	.onCreate( (snap, context) => {
+		console.log('send push notify inited')
+	// console.log('users', context)
+	// console.log('users', snap.data())
 	
-	const uppercase = name.toUpperCase();
-	
-	// You must return a Promise when performing asynchronous tasks inside a Functions such as
-	// writing to Cloud Firestore.
-	// Setting an 'uppercase' field in Cloud Firestore document returns a Promise.
-	return snap.ref.set({uppercase}, {merge: true});
+	//TODO: onCreateMessageHandler get Recipient Tokens and Send Notify
+	const data = snap.data()
+
+	if(data.to !== null && 1 === 3){
+
+		db.collection('users')
+		.doc(data.to)
+		// .where('name', '==', data.to)
+		.get()
+		.then(function(querySnapshot) {
+			querySnapshot.forEach(function(doc) {
+				console.log(doc.id, " => ", doc.data());
+
+				if(doc.token !== null){
+					
+					let payload = {
+						notification: {
+							title: 'You have been invited to a trip.',
+							body: 'Tap here to check it out!'
+						}
+					}
+					console.log(payload);
+					// admin.messaging().sendToDevice(doc.token, payload)
+					admin.messaging()
+					.sendToDevice("dfgsdfgsdfg", payload)
+					.catch(
+						console.error
+					)
+				}
+				
+			});
+			return false
+		})
+		.catch(function(error) {
+			console.log("Error getting documents: ", error);
+		});
+	}
+
 });
 
 
-const functions = require('firebase-functions');
 
-exports.newMessageNotifyTrigger = functions.firestore.document('/users/{userId}')
-	.onCreate((snap, context) => {
+// exports.newMessageNotifyTrigger2 = functions.firestore.document('/chats/{chatId}')
+// exports.newMessageNotifyTrigger = functions.firestore.document('/users/{userId}/chats/{chatId}')
+	// .onCreate((snap, context) => {
 	// Grab the current value of what was written to Cloud Firestore.
 	// const name = snap.data().name;
 
 	// Access the parameter `{documentId}` with `context.params`
 	// console.log('Uppercasing', context.params.documentId, name);
 	// console.log('CHATS1', context);
-	console.log('users', snap.data());
+	// console.log('chats', snap.data());
 	
 	// const uppercase = name.toUpperCase();
 	
@@ -35,36 +69,156 @@ exports.newMessageNotifyTrigger = functions.firestore.document('/users/{userId}'
 	// writing to Cloud Firestore.
 	// Setting an 'uppercase' field in Cloud Firestore document returns a Promise.
 	// return snap.ref.set({uppercase}, {merge: true});
-});
-
-exports.newMessageNotifyTrigger2 = functions.firestore.document('/chats/{chatId}')
-// exports.newMessageNotifyTrigger = functions.firestore.document('/users/{userId}/chats/{chatId}')
-	.onCreate((snap, context) => {
-	// Grab the current value of what was written to Cloud Firestore.
-	// const name = snap.data().name;
-
-	// Access the parameter `{documentId}` with `context.params`
-	// console.log('Uppercasing', context.params.documentId, name);
-	console.log('CHATS1', context);
-	console.log('chats', snap.data());
-	
-	// const uppercase = name.toUpperCase();
-	
-	// You must return a Promise when performing asynchronous tasks inside a Functions such as
-	// writing to Cloud Firestore.
-	// Setting an 'uppercase' field in Cloud Firestore document returns a Promise.
-	// return snap.ref.set({uppercase}, {merge: true});
-});
-
-// exports.helloWorld = functions.https.onRequest(async (request, response) => {
-// 	try{
-// 		const result = await bitrix24.callMethod('user.get');
-// 		console.log(result)
-// 	}catch(err){
-// 		console.log(err)
-// 	}
-// 	response.send("Hello from Firebase!");
 // });
+
+// exports.testAddNewMessage = functions.https.onRequest(async (request, response) => {
+	
+// 	let roomId = null
+// 	let chatId = null
+
+// 	await db.collection('rooms').doc()
+// 	.set({
+// 			time: Date.now()
+// 	})
+// 	.then(function(result) {
+// 		response.send(result)
+// 	})
+// 	.catch(function(error) {
+// 		response.send(error);
+// 	});
+
+// 	await db.collection('rooms').doc(roomId)
+// 	.collection('chats').doc()
+// 	.set({
+// 			message: 'This is test message',
+// 			from: 'test1',
+// 			to:'test2',
+// 			time: Date.now()
+// 	})
+// 	.then(function(docRef) {
+// 		chatId = docRef.id;
+// 		response.send(docRef)
+// 	})
+// 	.catch(function(error) {
+// 		response.send(error);
+// 	});
+// });
+
+exports.testAddNewMessage = functions.https.onRequest(async (request, response) => {
+	
+	let chatExist = true;
+	let roomId = null
+	let chatId = null
+
+	const roomsRef = db.collection('rooms')
+	const snapshot = await roomsRef.where('users','array-contains-any', ['test_user_code_1', 'test_user_code_2']).get()
+	if (snapshot.empty) {
+		response.send('emmmmmmmmmmprty')
+	}
+	else
+	{
+		response.send('not emmmmmmmmmmprty')
+	}
+
+	return false
+	await db.collection('rooms')
+	.add({
+			users: ['test_user_code_1', 'test_user_code_2'],
+			time: Date.now()
+	})
+	.then(function(ref) {
+		roomId = ref.id
+		response.send(ref)
+	})
+	.catch(function(error) {
+		response.send(error);
+	});
+
+	if(roomId.id !== null)
+	{
+		await db.collection('rooms')
+		.doc(roomId)
+		.collection('chats')
+		.add({
+				message: 'This is test message',
+				type:'text',
+				author: 'test_user_code_1',
+				to:'test_user_code_2',
+				time: Date.now()
+		})
+		.then(function(ref) {
+			chatId = ref.id;
+			response.send(ref)
+		})
+		.catch(function(error) {
+			response.send(error);
+		});
+	}
+});
+
+exports.testAddNewUser = functions.https.onRequest(async (request, response) => {
+	await db.collection('users')
+	.doc('test_user_code')
+	.set({
+			email: 'test@bxup.ru',
+			name: 'testUser',
+			time: Date.now(),
+			token:''
+	})
+	.then(function(ref) {
+		response.send(ref.id)
+	})
+	.catch(function(error) {
+		response.send(error);
+	});
+});
+
+exports.testAddNewUsers = functions.https.onRequest(async (request, response) => {
+	
+	await db.collection('users')
+		.doc('test_user_code_1')
+		.set({
+				email: 'test1@bxup.ru',
+				name: 'userName1',
+				time: Date.now(),
+				token:'token1'
+		})
+		.then(function(ref) {
+			response.send(ref.id)
+		})
+		.catch(function(error) {
+			response.send(error)
+		})
+
+	await db.collection('users')
+		.doc('test_user_code_2')
+		.set({
+				email: 'test2@bxup.ru',
+				name: 'userName2',
+				time: Date.now(),
+				token:'token2'
+		})
+		.then(function(ref) {
+			response.send(ref.id)
+		})
+		.catch(function(error) {
+			response.send(error)
+		})
+});
+
+exports.testAddNewRoom = functions.https.onRequest(async (request, response) => {
+	await db.collection('rooms')
+	.add({
+			time: Date.now()
+	})
+	.then(function(ref) {
+		response.send(ref.id)
+	})
+	.catch(function(error) {
+		response.send(error);
+	});
+});
+
 
 // users/{userId}
 // users/{userId}/name
@@ -81,5 +235,10 @@ exports.newMessageNotifyTrigger2 = functions.firestore.document('/chats/{chatId}
 // chats/{chatId}/admins:array
 // chats/{chatId}/created_date:microtime
 // chats/{chatId}/messages/{messageId}/message:text
-// chats/{chatId}/messages/{messageId}/send_by:userId
+// chats/{chatId}/messages/{messageId}/from:userId
+// chats/{chatId}/messages/{messageId}/from:to
 // chats/{chatId}/messages/{messageId}/time:microtime
+
+//export  onCreateMessageHandler 
+// get Recipient Tokens and Send Notify
+
