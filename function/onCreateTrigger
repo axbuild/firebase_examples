@@ -34,7 +34,7 @@ exports.sendNotify = functions.firestore.document('/chats/{chatId}')
 					console.log(payload);
 					// admin.messaging().sendToDevice(doc.token, payload)
 					admin.messaging()
-					.sendToDevice("dfgsdfgsdfg", payload)
+					.sendToDevice("test", payload)
 					.catch(
 						console.error
 					)
@@ -111,49 +111,50 @@ exports.testAddNewMessage = functions.https.onRequest(async (request, response) 
 	let chatId = null
 
 	const roomsRef = db.collection('rooms')
-	const snapshot = await roomsRef.where('users','array-contains-any', ['test_user_code_1', 'test_user_code_2']).get()
+	const snapshot = await roomsRef
+		.where('users.'+'test_user_code_1', "==", true)
+		.where('users.'+'test_user_code_2', "==", true)
+		.get()
+
 	if (snapshot.empty) {
-		response.send('emmmmmmmmmmprty')
-	}
-	else
-	{
-		response.send('not emmmmmmmmmmprty')
-	}
-
-	return false
-	await db.collection('rooms')
-	.add({
-			users: ['test_user_code_1', 'test_user_code_2'],
-			time: Date.now()
-	})
-	.then(function(ref) {
-		roomId = ref.id
-		response.send(ref)
-	})
-	.catch(function(error) {
-		response.send(error);
-	});
-
-	if(roomId.id !== null)
-	{
 		await db.collection('rooms')
-		.doc(roomId)
-		.collection('chats')
 		.add({
-				message: 'This is test message',
-				type:'text',
-				author: 'test_user_code_1',
-				to:'test_user_code_2',
+				users: {'test_user_code_1':true, 'test_user_code_2':true},
 				time: Date.now()
 		})
 		.then(function(ref) {
-			chatId = ref.id;
+			roomId = ref.id
 			response.send(ref)
 		})
 		.catch(function(error) {
 			response.send(error);
 		});
+
+		if(roomId.id !== null)
+		{
+			await db.collection('rooms')
+			.doc(roomId)
+			.collection('chats')
+			.add({
+					message: 'This is test message',
+					type:'text',
+					author: 'test_user_code_1',
+					to:'test_user_code_2',
+					time: Date.now()
+			})
+			.then(function(ref) {
+				chatId = ref.id;
+				response.send(ref)
+			})
+			.catch(function(error) {
+				response.send(error);
+			});
+		}
 	}
+	else{
+		response.send('not empty')
+	}
+
 });
 
 exports.testAddNewUser = functions.https.onRequest(async (request, response) => {
