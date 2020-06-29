@@ -5,6 +5,7 @@ const express = require('express')
 const users = require('./users')
 const rooms = require('./rooms')
 const chats = require('./chats')
+const tests = require('./tests')
 
 
 const db = admin.firestore()
@@ -24,6 +25,9 @@ app.post('/rooms/add', rooms.add)
 
 app.get('/chats', chats.chats)
 app.post('/chats/add', chats.add)
+
+app.get('/tests', tests.tests)
+app.post('/tests/addMessage', tests.addMessage)
 
 
 exports.api = functions.https.onRequest(app);
@@ -76,56 +80,3 @@ exports.api = functions.https.onRequest(app);
 
 
 
-
-// exports.testAddNewMessage = functions.https.onRequest(async (request, response) => {
-	
-// 	let chatExist = true;
-// 	let roomId = null
-// 	let chatId = null
-
-// 	const roomsRef = db.collection('rooms')
-// 	const snapshot = await roomsRef
-// 		.where('users.'+'test_user_code_1', "==", true)
-// 		.where('users.'+'test_user_code_2', "==", true)
-// 		.get()
-
-// 	if (snapshot.empty) {
-// 		await db.collection('rooms')
-// 		.add({
-// 				users: {'test_user_code_1':true, 'test_user_code_2':true},
-// 				time: Date.now()
-// 		})
-// 		.then(function(ref) {
-// 			roomId = ref.id
-// 			response.send(ref)
-// 		})
-// 		.catch(function(error) {
-// 			response.send(error);
-// 		});
-
-// 		if(roomId.id !== null)
-// 		{
-// 			await db.collection('rooms')
-// 			.doc(roomId)
-// 			.collection('chats')
-// 			.add({
-// 					message: 'This is test message',
-// 					type:'text',
-// 					author: 'test_user_code_1',
-// 					to:'test_user_code_2',
-// 					time: Date.now()
-// 			})
-// 			.then(function(ref) {
-// 				chatId = ref.id;
-// 				response.send(ref)
-// 			})
-// 			.catch(function(error) {
-// 				response.send(error);
-// 			});
-// 		}
-// 	}
-// 	else{
-// 		response.send('not empty')
-// 	}
-
-// });
