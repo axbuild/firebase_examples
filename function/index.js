@@ -30,53 +30,6 @@ app.get('/tests', tests.tests)
 app.post('/tests/addMessage', tests.addMessage)
 
 
-exports.api = functions.https.onRequest(app);
+exports.api = functions.https.onRequest(app)
 
-// exports.sendNotify = functions.firestore.document('/chats/{chatId}')
-// 	.onCreate( (snap, context) => {
-// 		console.log('send push notify inited')
-// 	// console.log('users', context)
-// 	// console.log('users', snap.data())
-	
-// 	//TODO: onCreateMessageHandler get Recipient Tokens and Send Notify
-// 	const data = snap.data()
-
-// 	if(data.to !== null && 1 === 3){
-
-// 		db.collection('users')
-// 		.doc(data.to)
-// 		// .where('name', '==', data.to)
-// 		.get()
-// 		.then(function(querySnapshot) {
-// 			querySnapshot.forEach(function(doc) {
-// 				console.log(doc.id, " => ", doc.data());
-
-// 				if(doc.token !== null){
-					
-// 					let payload = {
-// 						notification: {
-// 							title: 'You have been invited to a trip.',
-// 							body: 'Tap here to check it out!'
-// 						}
-// 					}
-// 					console.log(payload);
-// 					// admin.messaging().sendToDevice(doc.token, payload)
-// 					admin.messaging()
-// 					.sendToDevice("00000", payload)
-// 					.catch(
-// 						console.error
-// 					)
-// 				}
-				
-// 			});
-// 			return false
-// 		})
-// 		.catch(function(error) {
-// 			console.log("Error getting documents: ", error);
-// 		});
-// 	}
-
-// });
-
-
-
+exports.chatsOnCreateDocumentHandler = chats.onCreateDocumentHandler
