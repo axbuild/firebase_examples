@@ -33,8 +33,8 @@ exports.add = functions.https.onRequest( async (req, res) => {
 	else{
 		res.status(200).json('not empty')
 	}
-})
+});
 
-exports.rooms = functions.https.onRequest((req, res) => {
-	res.send("rooms")
-})
+exports.chats = functions.https.onRequest((req, res) => {
+	res.send("chats")
+});

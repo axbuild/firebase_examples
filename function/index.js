@@ -32,4 +32,5 @@ app.post('/tests/addMessage', tests.addMessage)
 
 exports.api = functions.https.onRequest(app)
 
-exports.chatsOnCreateDocumentHandler = chats.onCreateDocumentHandler
+exports.usersOnUpdate = users.onUpdate
+exports.chatsOnCreate = chats.onCreate

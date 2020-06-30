@@ -18,11 +18,11 @@ exports.addMessage = functions.https.onRequest(async (req, res) => {
 		.get()
 
 	if (snapshot.empty) {
-		let fields = req.body;
-		fields.time =  Date.now()
+
+		req.body.time =  Date.now()
 
 		await roomsRef
-		.add(fields)
+		.add(req.body)
 		.then(function(ref) {
 			roomId = ref.id
 			res.status(200).json(ref.id)
@@ -33,7 +33,7 @@ exports.addMessage = functions.https.onRequest(async (req, res) => {
 
 		if(roomId.id !== null)
 		{
-			await db.collection('rooms')
+			await roomsRef
 			.doc(roomId)
 			.collection('chats')
 			.add({
