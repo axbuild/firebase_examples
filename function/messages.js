@@ -35,6 +35,15 @@ exports.add = functions.https.onRequest( async (req, res) => {
 	}
 });
 
+exports.onCreate = functions.firestore.document('/rooms/{roomId}/chats/{chatId}')
+	.onCreate( (snapshot, context) => {
+
+		console.log('===================');
+		console.log(snapshot.roomId);
+		console.log(context.params.userId);
+		console.log('====================');
+});
+
 exports.chats = functions.https.onRequest((req, res) => {
 	res.send("chats")
 });

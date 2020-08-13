@@ -4,6 +4,7 @@ const init = require('./init')
 
 const db = admin.firestore()
 const roomsRef = db.collection('rooms')
+const usersRef = db.collection('users')
 
 exports.set = functions.https.onRequest( async (req, res) => {
 	res.send("TODO:")
