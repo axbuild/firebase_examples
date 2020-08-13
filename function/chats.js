@@ -21,13 +21,24 @@ exports.add = functions.https.onRequest( async (req, res) => {
 });
 
 //TODO: onCreate
-exports.onCreate = functions.firestore.document.onCreate('/rooms/{roomId}/chats/{chatId}')
+exports.onCreate = functions.firestore.document('/rooms/{roomId}/chats/{chatId}')
 	.onCreate( (snapshot, context) => {
 
-		// console.log('===================');
-		// console.log(snapshot.roomId);
-		// console.log(context.params.userId);
-		// console.log('====================');
+		console.log('===================');
+		const data = snapshot.data()
+
+		console.log(data)
+		
+
+		console.log(context.params.chatId);
+		console.log(context.params.roomId);
+
+		roomsRef
+		.doc(context.params.roomId)
+		.update({
+			'rrrrrr':'ttttttttt'
+		})
+		console.log('====================');
 });
 
 
