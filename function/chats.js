@@ -24,7 +24,6 @@ exports.add = functions.https.onRequest( async (req, res) => {
 exports.onCreate = functions.firestore.document('/rooms/{roomId}/chats/{chatId}')
 	.onCreate( (snapshot, context) => {
 
-		console.log('===================');
 		const data = snapshot.data()
 
 		console.log(data)
@@ -36,9 +35,11 @@ exports.onCreate = functions.firestore.document('/rooms/{roomId}/chats/{chatId}'
 		roomsRef
 		.doc(context.params.roomId)
 		.update({
-			'rrrrrr':'ttttttttt'
+			'incoming_message': true,
+			'incoming_message_initor':data['author'],
+			'incoming_message_num': 1
 		})
-		console.log('====================');
+
 });
 
 
