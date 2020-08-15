@@ -5,6 +5,7 @@ const express = require('express')
 const users = require('./users')
 const rooms = require('./rooms')
 const chats = require('./chats')
+const calls = require('./calls')
 const tests = require('./tests')
 
 
@@ -26,6 +27,9 @@ app.post('/rooms/add', rooms.add)
 app.get('/chats', chats.chats)
 app.post('/chats/add', chats.add)
 
+app.get('/calls', calls.calls)
+app.post('/calls/add', calls.add)
+
 app.get('/tests', tests.tests)
 app.post('/tests/addMessage', tests.addMessage)
 
@@ -34,3 +38,4 @@ exports.api = functions.https.onRequest(app)
 
 exports.usersOnUpdate = users.onUpdate
 exports.chatsOnCreate = chats.onCreate
+exports.callsOnCreate = calls.onCreate
