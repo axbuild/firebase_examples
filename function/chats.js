@@ -37,7 +37,7 @@ exports.onCreate = functions.firestore.document('/rooms/{roomId}/chats/{chatId}'
 		.update({
 			'incoming_message': true,
 			'incoming_message_initor':data['author'],
-			'incoming_message_num': 1
+			'incoming_message_num': admin.firestore.FieldValue.increment(1)
 		})
 
 });

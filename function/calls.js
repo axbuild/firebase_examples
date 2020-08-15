@@ -24,6 +24,7 @@ exports.add = functions.https.onRequest( async (req, res) => {
 exports.onCreate = functions.firestore.document('/rooms/{roomId}/calls/{callId}')
 	.onCreate( (snapshot, context) => {
 
+
 		const data = snapshot.data()
 
 		console.log(data)
@@ -37,7 +38,7 @@ exports.onCreate = functions.firestore.document('/rooms/{roomId}/calls/{callId}'
 		.update({
 			'incoming_call': true,
 			'incoming_call_initor':data['author'],
-			'incoming_call_num': 1
+			'incoming_call_num': admin.firestore.FieldValue.increment(1)
 		})
 
 });
