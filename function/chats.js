@@ -26,18 +26,16 @@ exports.onCreate = functions.firestore.document('/rooms/{roomId}/chats/{chatId}'
 
 		const data = snapshot.data()
 
-		console.log(data)
-		
+		const key = 'new_message_' + data['author'];
 
 		console.log(context.params.chatId);
 		console.log(context.params.roomId);
 
+
 		roomsRef
 		.doc(context.params.roomId)
 		.update({
-			'incoming_message': true,
-			'incoming_message_initor':data['author'],
-			'incoming_message_num': admin.firestore.FieldValue.increment(1)
+			[key] : admin.firestore.FieldValue.increment(1)
 		})
 
 });

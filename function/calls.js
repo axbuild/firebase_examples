@@ -27,7 +27,7 @@ exports.onCreate = functions.firestore.document('/rooms/{roomId}/calls/{callId}'
 
 		const data = snapshot.data()
 
-		console.log(data)
+		const key = 'missed_call_' + data['author'];
 		
 
 		console.log(context.params.callId);
@@ -36,9 +36,7 @@ exports.onCreate = functions.firestore.document('/rooms/{roomId}/calls/{callId}'
 		roomsRef
 		.doc(context.params.roomId)
 		.update({
-			'incoming_call': true,
-			'incoming_call_initor':data['author'],
-			'incoming_call_num': admin.firestore.FieldValue.increment(1)
+			[key] : admin.firestore.FieldValue.increment(1)
 		})
 
 });
