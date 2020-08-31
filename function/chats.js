@@ -13,7 +13,7 @@ exports.add = functions.https.onRequest( async (req, res) => {
 	.collection('chats')
 	.add(req.body.fields)
 	.then(function(ref) {
-		res.status(200).json(ref.id)
+		return res.status(200).json(ref.id)
 	})
 	.catch(function(error) {
 		res.status(500).send(error)

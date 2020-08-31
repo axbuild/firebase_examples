@@ -25,7 +25,7 @@ exports.addMessage = functions.https.onRequest(async (req, res) => {
 		.add(req.body)
 		.then(function(ref) {
 			roomId = ref.id
-			res.status(200).json(ref.id)
+			return res.status(200).json(ref.id)
 		})
 		.catch(function(error) {
 			res.status(500).send(error)
@@ -45,7 +45,7 @@ exports.addMessage = functions.https.onRequest(async (req, res) => {
 			})
 			.then(function(ref) {
 				chatId = ref.id;
-				res.status(200).json(ref.id)
+				return res.status(200).json(ref.id)
 			})
 			.catch(function(error) {
 				res.status(500).send(error)

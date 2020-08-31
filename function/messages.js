@@ -24,7 +24,7 @@ exports.add = functions.https.onRequest( async (req, res) => {
 		await roomsRef
 		.add(req.body)
 		.then(function(ref) {
-			res.status(200).json(ref.id)
+			return res.status(200).json(ref.id)
 		})
 		.catch(function(error) {
 			res.status(500).send(error)
@@ -35,14 +35,6 @@ exports.add = functions.https.onRequest( async (req, res) => {
 	}
 });
 
-exports.onCreate = functions.firestore.document('/rooms/{roomId}/chats/{chatId}')
-	.onCreate( (snapshot, context) => {
-
-		console.log('===================');
-		console.log(snapshot.roomId);
-		console.log(context.params.userId);
-		console.log('====================');
-});
 
 exports.chats = functions.https.onRequest((req, res) => {
 	res.send("chats")
